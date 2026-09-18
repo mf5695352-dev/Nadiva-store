@@ -515,3 +515,91 @@ document.addEventListener("DOMContentLoaded", function () {
     initWA();
     setInterval(initWA, 1000);
 })();
+// ================= كود إرسال الطلب والبيانات للواتساب =================
+document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("click", function (e) {
+        var btn = e.target.closest("button, a, input[type='submit'], .btn");
+        if (!btn) return;
+
+        var text = (btn.innerText || btn.value || "").toLowerCase().trim();
+
+        if (text.includes("إتمام") || text.includes("طلب") || text.includes("شراء") || text.includes("إرسال") || text.includes("confirm") || text.includes("checkout")) {
+            
+            var nameInput = document.querySelector('input[placeholder*="اسم"], input[name*="name"], input[id*="name"]');
+            var phoneInput = document.querySelector('input[type="tel"], input[placeholder*="رقم"], input[placeholder*="هاتف"], input[placeholder*="تليفون"], input[name*="phone"], input[id*="phone"]');
+            var addressInput = document.querySelector('textarea, input[placeholder*="عنوان"], input[name*="address"], input[id*="address"]');
+
+            var name = nameInput ? nameInput.value.trim() : "";
+            var phone = phoneInput ? phoneInput.value.trim() : "";
+            var address = addressInput ? addressInput.value.trim() : "";
+
+            var allInputs = document.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
+            if (!name && allInputs[0]) name = allInputs[0].value.trim();
+            if (!phone && allInputs[1]) phone = allInputs[1].value.trim();
+            if (!address && allInputs[2]) address = allInputs[2].value.trim();
+
+            // لو العميل لسه مكتبش البيانات، سيبه يكملهم في الموقع
+            if (!name && !phone) {
+                return;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            var cart = [];
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                try {
+                    var parsed = JSON.parse(localStorage.getItem(key));
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        cart = parsed;
+                        break;
+                    }
+                } catch (err) {}
+            }
+
+            var msg = "🛒 *طلب جديد من المتجر*%0A";
+            msg += "---------------------------%0A";
+            msg += "👤 *الاسم:* " + (name || "غير محدد") + "%0A";
+            msg += "📞 *الرقم:* " + (phone || "غير محدد") + "%0A";
+            msg += "📍 *العنوان:* " + (address || "غير محدد") + "%0A";
+            msg += "---------------------------%0A";
+
+            if (cart.length > 0) {
+                msg += "*📦 المنتجات المطلوبة:*%0A";
+                cart.forEach(function (item, idx) {
+                    var title = item.name || item.title || item.productName || "منتج";
+                    var qty = item.quantity || item.qty || item.count || 1;
+                    msg += (idx + 1) + ". " + title + " (العدد: " + qty + ")%0A";
+                });
+            } else {
+                msg += "*المنتجات:* تفاصيل السلة المطلوبة.%0A";
+            }
+
+            var oldModal = document.getElementById("wa-phone-modal");
+            if (oldModal) oldModal.remove();
+
+            var modalHtml = `
+                <div id="wa-phone-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:999999; font-family:sans-serif;">
+                    <div style="background:#fff; padding:20px 25px; border-radius:12px; text-align:center; max-width:320px; width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.3);">
+                        <h3 style="margin-top:0; color:#333; font-size:17px;">اختر رقم الواتساب لإرسال الطلب:</h3>
+                        <button id="wa-b1" style="width:100%; margin:8px 0; padding:12px; background:#25D366; color:white; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">01010397972 💬</button>
+                        <button id="wa-b2" style="width:100%; margin:8px 0; padding:12px; background:#128C7E; color:white; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">01020189861 💬</button>
+                        <button id="wa-close" style="background:none; border:none; color:#777; margin-top:8px; cursor:pointer; font-size:13px; text-decoration:underline;">تعديل البيانات</button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+            document.getElementById("wa-b1").onclick = function () {
+                window.open("https://api.whatsapp.com/send?phone=201010397972&text=" + encodeURIComponent(msg), "_blank");
+            };
+            document.getElementById("wa-b2").onclick = function () {
+                window.open("https://api.whatsapp.com/send?phone=201020189861&text=" + encodeURIComponent(msg), "_blank");
+            };
+            document.getElementById("wa-close").onclick = function () {
+                document.getElementById("wa-phone-modal").remove();
+            };
+        }
+    }, true);
+});
