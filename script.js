@@ -356,3 +356,47 @@ document.addEventListener('click', function (e) {
     attachWhatsAppFix();
     setInterval(attachWhatsAppFix, 1000);
 })();
+document.addEventListener("DOMContentLoaded", function () {
+    const checkoutBtns = document.querySelectorAll("button, a, input[type='submit']");
+    checkoutBtns.forEach(btn => {
+        const text = (btn.innerText || btn.value || "").toLowerCase();
+        if (text.includes("إتمام") || text.includes("check") || text.includes("طلب")) {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // 1. قراءة البيانات
+                const name = document.querySelector("input[placeholder*='اسم']")?.value || "";
+                const phone = document.querySelector("input[type='tel'], input[placeholder*='رقم']")?.value || "";
+                const address = document.querySelector("textarea, input[placeholder*='عنوان']")?.value || "";
+
+                // 2. قراءة السلة
+                let cart = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    try {
+                        const parsed = JSON.parse(localStorage.getItem(key));
+                        if (Array.isArray(parsed) && parsed.length > 0) { cart = parsed; break; }
+                    } catch (err) {}
+                }
+
+                // 3. تجهيز الرسالة
+                let msg = "🛒 *طلب جديد*%0A";
+                msg += `👤 *الاسم:* ${name}%0A`;
+                msg += `📞 *الرقم:* ${phone}%0A`;
+                msg += `📍 *العنوان:* ${address}%0A%0A`;
+                msg += "📦 *المنتجات:*%0A";
+                cart.forEach((item, index) => {
+                    msg += `${index + 1}. ${item.name || item.title} (العدد: ${item.quantity || 1})%0A`;
+                });
+
+                // 4. الاختيار المباشر
+                if (confirm("اختر (موافق) للرقم الأول: 01010397972 أو (إلغاء) للرقم الثاني: 01020189861")) {
+                    window.open(`https://api.whatsapp.com/send?phone=201010397972&text=${encodeURIComponent(msg)}`, "_blank");
+                } else {
+                    window.open(`https://api.whatsapp.com/send?phone=201020189861&text=${encodeURIComponent(msg)}`, "_blank");
+                }
+            });
+        }
+    });
+});
