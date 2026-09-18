@@ -952,5 +952,54 @@ window.onclick = function(event) {
     });
   });
 </script>
+<!-- ================= بداية فورمة طلبات الواتساب ================= -->
+<div style="max-width: 400px; margin: 30px auto; padding: 20px; border: 2px solid #25D366; border-radius: 10px; font-family: sans-serif; direction: rtl; text-align: right; background-color: #f9f9f9;">
+  <h3 style="color: #075e54; margin-top: 0; text-align: center;">🛒 نموذج إرسال الطلب</h3>
+  
+  <label style="display:block; margin-bottom: 5px; font-weight: bold;">الاسم بالكامل:</label>
+  <input type="text" id="cust_name" placeholder="اكتب اسمك هنا" style="width: 100%; padding: 8px; margin-bottom: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+
+  <label style="display:block; margin-bottom: 5px; font-weight: bold;">رقم التليفون:</label>
+  <input type="tel" id="cust_phone" placeholder="01xxxxxxxxx" style="width: 100%; padding: 8px; margin-bottom: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+
+  <label style="display:block; margin-bottom: 5px; font-weight: bold;">العنوان بالكامل:</label>
+  <input type="text" id="cust_address" placeholder="المحافظة - المدينة - الشارع" style="width: 100%; padding: 8px; margin-bottom: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+
+  <label style="display:block; margin-bottom: 5px; font-weight: bold;">تفاصيل الطلب / اسم المنتج:</label>
+  <textarea id="cust_order" rows="3" placeholder="اكتب اسم المنتج أو الكمية" style="width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+
+  <p style="margin-bottom: 8px; font-weight: bold;">اختر رقم الواتساب لإرسال الطلب عليه:</p>
+  <button type="button" onclick="sendToWhatsApp('201010397972')" style="width: 100%; background-color: #25D366; color: white; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-bottom: 8px;">
+    إرسال للرقم الأول (01010397972) 💬
+  </button>
+  
+  <button type="button" onclick="sendToWhatsApp('201020189861')" style="width: 100%; background-color: #128C7E; color: white; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer;">
+    إرسال للرقم الثاني (01020189861) 💬
+  </button>
+</div>
+
+<script>
+function sendToWhatsApp(phoneNum) {
+  var name = document.getElementById('cust_name').value.trim();
+  var phone = document.getElementById('cust_phone').value.trim();
+  var address = document.getElementById('cust_address').value.trim();
+  var order = document.getElementById('cust_order').value.trim();
+
+  if(!name || !phone || !order) {
+    alert('برجاء ملء البيانات الأساسية (الاسم، التليفون، والطلب)');
+    return;
+  }
+
+  var message = "📦 *طلب جديد من الموقع*%0A%0A" +
+                "👤 *الاسم:* " + encodeURIComponent(name) + "%0A" +
+                "📞 *التليفون:* " + encodeURIComponent(phone) + "%0A" +
+                "📍 *العنوان:* " + encodeURIComponent(address) + "%0A" +
+                "🛍️ *الطلب:* " + encodeURIComponent(order);
+
+  var whatsappURL = "https://wa.me/" + phoneNum + "?text=" + message;
+  window.open(whatsappURL, '_blank');
+}
+</script>
+<!-- ================= نهاية فورمة طلبات الواتساب ================= -->
 </body>
 </html>
