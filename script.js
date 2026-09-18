@@ -603,3 +603,95 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }, true);
 });
+// ================= حل مشكلة التنقل للواتساب =================
+document.addEventListener("click", function (e) {
+    var btn = e.target.closest("button, a, input[type='submit'], .btn");
+    if (!btn) return;
+
+    var text = (btn.innerText || btn.value || "").toLowerCase().trim();
+
+    // 1. لو العميل داس على Proceed to Checkout -> سيبه يروح لصفحة البيانات عادي وما تفتحش واتساب
+    if (text.includes("proceed") || btn.href?.includes("checkout")) {
+        return; // خروج بدون فتح الواتساب
+    }
+
+    // 2. لو العميل داس على (إكتمال/تأكيد/إرسال الطلب) بعد كتابة البيانات -> افتح الواتساب
+    if (text.includes("إكتمال") || text.includes("اكتمال") || text.includes("إرسال") || text.includes("تأكيد") || text.includes("confirm") || text.includes("place order")) {
+        
+        var inputs = document.querySelectorAll("input:not([type='hidden']), textarea");
+        var name = "", phone = "", address = "";
+
+        inputs.forEach(function(inp) {
+            var val = inp.value ? inp.value.trim() : "";
+            var ph = (inp.placeholder || "").toLowerCase();
+            var n = (inp.name || "").toLowerCase();
+
+            if (val) {
+                if (ph.includes("اسم") || n.includes("name")) name = val;
+                else if (ph.includes("رقم") || ph.includes("هاتف") || ph.includes("تليفون") || n.includes("phone")) phone = val;
+                else if (ph.includes("عنوان") || n.includes("address") || inp.tagName === "TEXTAREA") address = val;
+            }
+        });
+
+        // لو الخانات متعرفتش، بناخد أول 3 خانات بالترتيب
+        if (!name && inputs[0]) name = inputs[0].value;
+        if (!phone && inputs[1]) phone = inputs[1].value;
+        if (!address && inputs[2]) address = inputs[2].value;
+
+        // قراءة السلة
+        var cart = [];
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            try {
+                var parsed = JSON.parse(localStorage.getItem(key));
+                if (Array.isArray(parsed) && parsed.length > 0) { cart = parsed; break; }
+            } catch (err) {}
+        }
+
+        // تجهيز الرسالة
+        var msg = "🛒 *طلب جديد من المتجر*%0A";
+        msg += "---------------------------%0A";
+        msg += "👤 *الاسم:* " + (name || "غير محدد") + "%0A";
+        msg += "📞 *الرقم:* " + (phone || "غير محدد") + "%0A";
+        msg += "📍 *العنوان:* " + (address || "غير محدد") + "%0A";
+        msg += "---------------------------%0A";
+
+        if (cart.length > 0) {
+            msg += "*📦 المنتجات المطلوبة:*%0A";
+            cart.forEach(function(item, idx) {
+                var title = item.name || item.title || "منتج";
+                var qty = item.quantity || item.qty || 1;
+                msg += (idx + 1) + ". " + title + " (العدد: " + qty + ")%0A";
+            });
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        // إظهار نافذة الاختيار
+        var oldModal = document.getElementById("wa-phone-modal");
+        if (oldModal) oldModal.remove();
+
+        var modalHtml = `
+            <div id="wa-phone-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:999999; font-family:sans-serif;">
+                <div style="background:#fff; padding:20px 25px; border-radius:12px; text-align:center; max-width:320px; width:90%;">
+                    <h3 style="margin-top:0; color:#333; font-size:17px;">اختر رقم الواتساب لإرسال الطلب:</h3>
+                    <button id="wa-b1" style="width:100%; margin:8px 0; padding:12px; background:#25D366; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">01010397972 💬</button>
+                    <button id="wa-b2" style="width:100%; margin:8px 0; padding:12px; background:#128C7E; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">01020189861 💬</button>
+                    <button id="wa-close" style="background:none; border:none; color:#777; margin-top:8px; cursor:pointer; text-decoration:underline;">إلغاء</button>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+        document.getElementById("wa-b1").onclick = function() {
+            window.location.href = "https://api.whatsapp.com/send?phone=201010397972&text=" + encodeURIComponent(msg);
+        };
+        document.getElementById("wa-b2").onclick = function() {
+            window.location.href = "https://api.whatsapp.com/send?phone=201020189861&text=" + encodeURIComponent(msg);
+        };
+        document.getElementById("wa-close").onclick = function() {
+            document.getElementById("wa-phone-modal").remove();
+        };
+    }
+}, true);
