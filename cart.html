@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - NADIVA Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* Navbar matched with your main page */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            letter-spacing: 1px;
+            text-transform: lowercase;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #e65100;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Page Layout */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #111;
+            font-weight: 700;
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cart Items Container */
+        .cart-items-container {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product-info img {
+            width: 80px;
+            height: 90px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .product-details h4 {
+            font-size: 15px;
+            color: #222;
+            margin-bottom: 6px;
+        }
+
+        .product-details .price {
+            color: #e65100;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f5f5f5;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .quantity-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #555;
+            width: 20px;
+        }
+
+        .quantity-number {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .remove-btn:hover {
+            color: #d32f2f;
+        }
+
+        /* Order Summary Box */
+        .cart-summary {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            height: fit-content;
+        }
+
+        .summary-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #e65100; /* Same orange from your design */
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background: #d84315;
+        }
+
+        .empty-cart-msg {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">nadiva</div>
+        <a href="index.html" class="back-btn">← Continue Shopping</a>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">Your Shopping Cart</h1>
+
+        <div class="cart-layout">
+            <!-- Dynamic Cart Products -->
+            <div class="cart-items-container" id="cart-list"></div>
+
+            <!-- Total Price & Summary -->
+            <div class="cart-summary">
+                <h3 class="summary-title">Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>Free</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="total-price" style="color: #e65100;">$0.00</span>
+                </div>
+                <button class="checkout-btn" onclick="completeOrder()">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default Demo Data (Will load if LocalStorage is empty)
+        let defaultCart = [
+            { id: 1, title: 'Summer Casual Yellow Dress', price: 45.00, image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500', quantity: 1 },
+            { id: 2, title: 'Urban Chic Crop Top & Pants', price: 60.00, image: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500', quantity: 1 }
+        ];
+
+        // Fetch cart data from localStorage or use default
+        let cart = JSON.parse(localStorage.getItem('nadiva_cart')) || defaultCart;
+
+        function renderCart() {
+            const container = document.getElementById('cart-list');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="empty-cart-msg">Your cart is currently empty 🛒</div>';
+                updatePrices(0);
+                return;
+            }
+
+            let grandTotal = 0;
+
+            cart.forEach((product, index) => {
+                const itemTotal = product.price * product.quantity;
+                grandTotal += itemTotal;
+
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <div class="product-info">
+                            <img src="${product.image}" alt="${product.title}">
+                            <div class="product-details">
+                                <h4>${product.title}</h4>
+                                <div class="price">$${product.price.toFixed(2)}</div>
+                            </div>
+                        </div>
+
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(${index}, -1)">-</button>
+                            <span class="quantity-number">${product.quantity}</span>
+                            <button class="quantity-btn" onclick="changeQuantity(${index}, 1)">+</button>
+                        </div>
+
+                        <button class="remove-btn" onclick="removeItem(${index})">✕</button>
+                    </div>
+                `;
+            });
+
+            updatePrices(grandTotal);
+        }
+
+        function changeQuantity(index, amount) {
+            if (cart[index].quantity + amount > 0) {
+                cart[index].quantity += amount;
+            } else {
+                cart.splice(index, 1);
+            }
+            saveAndRender();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            saveAndRender();
+        }
+
+        function updatePrices(total) {
+            document.getElementById('subtotal').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('total-price').innerText = `$${total.toFixed(2)}`;
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('nadiva_cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function completeOrder() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+            } else {
+                alert('Order placed successfully! 🚀');
+            }
+        }
+
+        renderCart();
+    </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // إيجاد زرار إتمام الشراء
+    const checkoutBtn = document.querySelector('.checkout-btn, #checkout-btn, a[href*="checkout"]');
+
+    if (checkoutBtn) {
+        // إزالة أي أفعال قديمة للزرار
+        checkoutBtn.onclick = null;
+
+        checkoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // منع أي Alert أو كود قديم إنه يشتغل
+
+            // التوجيه المباشر لصفحة العنوان والبيانات
+            window.location.href = 'checkout.html';
+        }, true);
+    }
+});
+</script>
+</body>
+</html>

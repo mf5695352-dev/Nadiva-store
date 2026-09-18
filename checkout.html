@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام الطلب - NADIVA</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f8f9fa; padding: 20px; color: #333; }
+        .checkout-container { max-width: 800px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 20px; color: #111; font-size: 1.6rem; text-align: center; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; outline: none; transition: 0.2s; }
+        input:focus { border-color: #0d82f7; }
+        .order-summary { background: #f1f5f9; padding: 20px; border-radius: 8px; margin-top: 25px; margin-bottom: 25px; }
+        .order-summary h3 { margin-bottom: 12px; font-size: 1.1rem; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+        .total-price { font-weight: bold; font-size: 1.2rem; color: #0d82f7; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; }
+        .submit-btn { width: 100%; background: #0d82f7; color: white; border: none; padding: 14px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        .submit-btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <h2>إتمام الشراء</h2>
+        
+        <form id="checkout-form">
+            <div class="form-group">
+                <label>الاسم بالكامل</label>
+                <input type="text" id="fullname" required placeholder="أدخل اسمك الثلاثي">
+            </div>
+
+            <div class="form-group">
+                <label>رقم الهاتف</label>
+                <input type="tel" id="phone" required placeholder="01XXXXXXXXX">
+            </div>
+
+            <div class="form-group">
+                <label>العنوان التفصيلي</label>
+                <input type="text" id="address" required placeholder="اسم الشارع - رقم المبنى - الشقة">
+            </div>
+
+            <div class="form-group">
+                <label>المدينة / المحافظة</label>
+                <input type="text" id="city" required placeholder="القاهرة، الإسكندرية...">
+            </div>
+
+            <!-- ملخص الطلب -->
+            <div class="order-summary">
+                <h3>ملخص الحساب</h3>
+                <div class="summary-item">
+                    <span>إجمالي المنتجات:</span>
+                    <span id="subtotal-val">$0.00</span>
+                </div>
+                <div class="summary-item">
+                    <span>مصاريف الشحن:</span>
+                    <span>$5.00</span>
+                </div>
+                <div class="summary-item total-price">
+                    <span>المبلغ الإجمالي:</span>
+                    <span id="total-val">$0.00</span>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">تأكيد الطلب الآن</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // جلب البيانات من السلة
+            const cart = JSON.parse(localStorage.getItem('nadiva_cart')) || [];
+            
+            // حساب الإجمالي
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += (item.price * (item.quantity || 1));
+            });
+
+            const shipping = subtotal > 0 ? 5.00 : 0.00;
+            const total = subtotal + shipping;
+
+            // عرض المبالغ في الصفحة
+            document.getElementById('subtotal-val').innerText = '$' + subtotal.toFixed(2);
+            document.getElementById('total-val').innerText = '$' + total.toFixed(2);
+
+            // عند تقديم النموذج (تأكيد الطلب)
+            document.getElementById('checkout-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (cart.length === 0) {
+                    alert('السلة فارغة! يرجى إضافة منتجات أولاً.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // إظهار رسالة تم بنجاح
+                alert('شكراً لك! تم استلام طلبك بنجاح وسنتواصل معك قريباً لتأكيده.');
+
+                // تفريغ السلة وتوجيه العميل للصفحة الرئيسية
+                localStorage.removeItem('nadiva_cart');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NADIVA Store - Best Fashion Site Ever!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f8fafc;
+      color: #333;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 8%;
+      background-color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .brand-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: #0d82f7;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* CART ICON WITH BADGE */
+    .cart-btn {
+      position: relative;
+      background: #f0f6ff;
+      border: none;
+      outline: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background 0.3s;
+    }
+
+    .cart-btn:hover {
+      background: #e1eeef;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #ff5e36;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+    }
+
+    .btn-signin {
+      background-color: #ff5e36;
+      color: white;
+      padding: 10px 24px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-signin:hover {
+      background-color: #e04b25;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      background: linear-gradient(135deg, #0d82f7 0%, #0062cc 100%);
+      color: white;
+      padding: 50px 8%;
+      border-radius: 0 0 40px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .hero-content {
+      max-width: 520px;
+    }
+
+    .welcome-text {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      line-height: 1.2;
+    }
+
+    .sub-text {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    /* SEARCH BOX */
+    .search-box {
+      display: flex;
+      background-color: white;
+      padding: 5px;
+      border-radius: 30px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      padding: 10px 20px;
+      flex: 1;
+      border-radius: 30px;
+      font-size: 14px;
+    }
+
+    .btn-search {
+      background-color: #ff5e36;
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-search:hover {
+      background-color: #e04b25;
+    }
+
+    .hero-image img {
+      width: 320px;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      border: 3px solid rgba(255, 255, 255, 0.4);
+    }
+
+    /* CATEGORIES SECTION */
+    .categories-section {
+      padding: 40px 8% 0 8%;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .category-card {
+      background-color: #ffffff;
+      padding: 18px 10px;
+      border-radius: 12px;
+      text-align: center;
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      transition: all 0.3s ease;
+      border: 1px solid #edf2f7;
+    }
+
+    .category-card:hover {
+      background-color: #0d82f7;
+      color: #ffffff;
+      transform: translateY(-3px);
+    }
+
+    /* TRENDING SECTION */
+    .trending-section {
+      padding: 50px 8%;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 30px;
+    }
+
+    .tag {
+      color: #ff5e36;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+
+    .section-header h2 {
+      font-size: 28px;
+      color: #222;
+    }
+
+    .btn-view-all {
+      background-color: #ff5e36;
+      color: white;
+      text-decoration: none;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* PRODUCTS GRID */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .product-card {
+      background-color: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-img {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+    }
+
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background-color: #ff5e36;
+      color: white;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .product-info {
+      padding: 18px;
+    }
+
+    .category {
+      font-size: 11px;
+      color: #888;
+      display: block;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .product-info h3 {
+      font-size: 14px;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .price {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0d82f7;
+    }
+
+    .btn-add {
+      background-color: #f0f6ff;
+      color: #0d82f7;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-add:hover {
+      background-color: #0d82f7;
+      color: white;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 25px;
+      background-color: #ffffff;
+      color: #777;
+      font-size: 13px;
+      border-top: 1px solid #eee;
+    }
+    .add-to-cart-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #0d82f7 !important;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.add-to-cart-btn:hover {
+    color: #0056b3 !important;
+    text-decoration: underline;
+}
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="logo">
+      <a href="#">
+        <img src="logo.jpg" alt="NADIVA" class="brand-logo" onerror="this.src='https://via.placeholder.com/150x55?text=NADIVA'">
+      </a>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#">Our shop</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+    <a href="cart.html" class="cart-icon">
+        🛒
+        <span class="cart-badge" id="cartCount">0</span>
+    </a>
+      <a href="#" class="btn-signin">Sign in</a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="welcome-text">Welcome To NADIVA STORE!</p>
+      <h1>Best Fashion Site Ever!</h1>
+      <p class="sub-text">Discover the latest fashion trends with premium quality and exclusive deals curated just for you.</p>
+      
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Start typing...">
+        <button class="btn-search">SEARCH</button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="hero-rack.jpg" alt="Fashion Clothes Rack" onerror="this.src='https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=600&auto=format&fit=crop'">
+    </div>
+  </section>
+
+  <!-- CATEGORIES SECTION -->
+  <section class="categories-section">
+    <span class="tag">EXPLORE</span>
+    <h2 style="font-size: 22px; margin-top: 4px;">Top Categories</h2>
+    <div class="categories-grid">
+      <a href="#" class="category-card">👗 Dresses</a>
+      <a href="#" class="category-card">🧥 Outerwear</a>
+      <a href="#" class="category-card">👕 Tops</a>
+      <a href="#" class="category-card">👠 Shoes</a>
+      <a href="#" class="category-card">👜 Accessories</a>
+    </div>
+  </section>
+
+  <!-- TRENDING FASHION SECTION -->
+  <section class="trending-section">
+    <div class="section-header">
+      <div>
+        <span class="tag">TRENDING</span>
+        <h2>Trending Fashion</h2>
+      </div>
+      <a href="#" class="btn-view-all">View all</a>
+    </div>
+
+    <!-- PRODUCTS GRID -->
+    <div class="products-grid">
+
+      <div class="products-grid"></div>
+
+<!-- Product 1 -->
+<div class="product-card">
+    <div class="product-img">
+        <a href="product-details.html?id=1">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500" alt="Elegant Summer Dress">
+        </a>
+        <span class="badge">Hot</span>
+    </div>
+    <div class="product-info">
+        <span class="category">Dresses</span>
+        <h3><a href="product-details.html?id=1">Elegant Summer Dress</a></h3>
+        <div class="product-bottom">
+            <span class="price">$45.00</span>
+            <button class="add-to-cart-btn">Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+<!-- Product 2 -->
+<div class="product-card">
+    <div class="product-img">
+        <a href="product-details.html?id=2">
+            <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500" alt="Urban Style Streetwear">
+        </a>
+        <span class="badge">New</span>
+    </div>
+    <div class="product-info">
+        <span class="category">Streetwear</span>
+        <h3><a href="product-details.html?id=2">Urban Style Streetwear Set</a></h3>
+        <div class="product-bottom">
+            <span class="price">$65.00</span>
+            <button class="add-to-cart-btn">Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+<!-- Product 3 -->
+<div class="product-card">
+    <div class="product-img">
+        <a href="product-details.html?id=3">
+            <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500" alt="Cozy Soft Knit Sweater">
+        </a>
+    </div>
+    <div class="product-info">
+        <span class="category">Winter Wear</span>
+        <h3><a href="product-details.html?id=3">Cozy Soft Knit Sweater</a></h3>
+        <div class="product-bottom">
+            <span class="price">$50.00</span>
+            <button class="add-to-cart-btn">Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+<!-- Product 4 -->
+<div class="product-card">
+    <div class="product-img">
+        <a href="product-details.html?id=4">
+            <img src="https://images.unsplash.com/photo-1544441893-675973e31985?w=500" alt="Classic Denim Jacket">
+        </a>
+        <span class="badge">Sale</span>
+    </div>
+    <div class="product-info">
+        <span class="category">Outerwear</span>
+        <h3><a href="product-details.html?id=4">Classic Denim Jacket</a></h3>
+        <div class="product-bottom">
+            <span class="price">$85.00</span>
+            <button class="add-to-cart-btn">Add to Cart</button>
+            
+        </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 NADIVA Store. All rights reserved.</p>
+  </footer>
+
+  <!-- SCRIPT FOR CART INTERACTIVITY -->
+  <script>
+    let cartCount = 0;
+    const cartBadge = document.getElementById('cartCount');
+    const addButtons = document.querySelectorAll('.btn-add');
+
+    addButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        cartCount++;
+        cartBadge.textContent = cartCount;
+
+        // Feedback on button click
+        const originalText = button.textContent;
+        button.textContent = 'Added ✓';
+        button.style.backgroundColor = '#0d82f7';
+        button.style.color = '#fff';
+
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.backgroundColor = '#f0f6ff';
+          button.style.color = '#0d82f7';
+        }, 1000);
+      });
+    })            
+
+  </script>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.add-to-cart-btn');
+        
+        if (btn) {
+            e.preventDefault();
+            
+            const card = btn.closest('.product-card');
+            
+            if (card) {
+                const titleEl = card.querySelector('h3');
+                const priceEl = card.querySelector('.price');
+                const imgEl = card.querySelector('img');
+
+                const title = titleEl ? titleEl.innerText.trim() : 'Product';
+                const priceText = priceEl ? priceEl.innerText.trim() : '$0';
+                const price = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
+                const image = imgEl ? imgEl.src : '';
+
+                // حفظ المنتجات في localStorage
+                let cart = JSON.parse(localStorage.getItem('nadiva_cart')) || [];
+                const existingIndex = cart.findIndex(item => item.title === title);
+
+                if (existingIndex > -1) {
+                    cart[existingIndex].quantity += 1;
+                } else {
+                    cart.push({
+                        title: title,
+                        price: price,
+                        image: image,
+                        quantity: 1
+                    });
+                }
+
+                localStorage.setItem('nadiva_cart', JSON.stringify(cart));
+
+                // تغيير شكل الزرار مؤقتاً لتأكيد الإضافة بدون فتح الصفحة
+                const originalText = btn.innerText;
+                btn.innerText = 'Added ✓';
+                btn.style.backgroundColor = '#28a745';
+                btn.style.color = '#fff';
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = '';
+                    btn.style.color = '';
+                }, 1500);
+            }
+        }
+    });
+});
+</script>
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // 1. تشغيل مربع البحث (Search Bar)
+    const searchInput = document.querySelector('input[placeholder*="typing"], input[type="text"]');
+    const searchBtn = document.querySelector('.SEARCH, button:contains("SEARCH")') || searchInput?.nextElementSibling;
+
+    function doSearch() {
+        if (!searchInput) return;
+        const query = searchInput.value.toLowerCase().trim();
+        const products = document.querySelectorAll('.product-card, .product, [class*="product"]');
+
+        products.forEach(product => {
+            const text = product.innerText.toLowerCase();
+            if (text.includes(query)) {
+                product.style.display = '';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', doSearch);
+    }
+    if (searchBtn) {
+        searchBtn.addEventListener('click', doSearch);
+    }
+
+
+    // 2. تشغيل أزرار الأقسام (Dresses, Outerwear, Tops, Shoes, Accessories)
+    const categoryEls = document.querySelectorAll('.Top-Categories *, [class*="category"] *, [class*="Categories"] *');
+    
+    categoryEls.forEach(el => {
+        // فحص الأزرار اللي فيها أسامي الأقسام
+        const text = el.innerText.trim();
+        if (['Dresses', 'Outerwear', 'Tops', 'Shoes', 'Accessories'].includes(text)) {
+            el.style.cursor = 'pointer';
+            
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                const selectedCat = text.toLowerCase();
+                const products = document.querySelectorAll('.product-card, .product, [class*="product"]');
+
+                products.forEach(product => {
+                    const prodText = product.innerText.toLowerCase();
+                    if (prodText.includes(selectedCat)) {
+                        product.style.display = '';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+
+
+    // 3. تشغيل زرار Sign in و View all والروابط اللي فوق
+    document.addEventListener('click', function(e) {
+        const targetText = e.target.innerText.trim().toLowerCase();
+
+        if (targetText.includes('sign in')) {
+            window.location.href = 'login.html'; // أو صفحة التسجيل عندك
+        } else if (targetText.includes('view all')) {
+            // إظهار كل المنتجات تاني
+            document.querySelectorAll('.product-card, .product, [class*="product"]').forEach(p => p.style.display = '');
+        } else if (targetText === 'our shop') {
+            window.location.href = 'shop.html';
+        } else if (targetText === 'contact') {
+            window.location.href = 'contact.html';
+        } else if (targetText === 'about') {
+            window.location.href = 'about.html';
+        }
+    });
+
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // 1. تشغيل روابط القائمة فوق (Home, Our shop, Contact, About, Sign in)
+    document.querySelectorAll('a, button').forEach(el => {
+        const txt = el.innerText.trim().toLowerCase();
+        if (txt === 'home') el.onclick = () => window.location.href = 'test.html';
+        if (txt === 'our shop' || txt === 'shop') el.onclick = () => window.location.href = 'shop.html';
+        if (txt === 'contact') el.onclick = () => window.location.href = 'contact.html';
+        if (txt === 'about') el.onclick = () => window.location.href = 'about.html';
+        if (txt.includes('sign in')) el.onclick = () => window.location.href = 'login.html';
+    });
+
+    // 2. تشغيل الأقسام بدقة عالية بالبحث عن الكلمة فور الضغط على أي عنصر
+    const categories = ['dresses', 'outerwear', 'tops', 'shoes', 'accessories'];
+
+    document.body.addEventListener('click', function(e) {
+        // يجيب كل النصوص جوه المكان اللي اتداس عليه حتى لو فيه صور أو أيقونات
+        const targetText = e.target.closest('*')?.innerText?.toLowerCase() || '';
+
+        // نشوف أنهي قسم اتداس عليه
+        const matchedCat = categories.find(cat => targetText.includes(cat));
+
+        if (matchedCat && !targetText.includes('top categories')) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // فلترة كروت المنتجات
+            const products = document.querySelectorAll('.product-card, .product, [class*="product"], [class*="card"]');
+            
+            products.forEach(product => {
+                const pText = product.innerText.toLowerCase();
+                if (pText.includes(matchedCat)) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+
+        // تشغيل زر View all لإرجاع الكل
+        if (targetText.includes('view all')) {
+            document.querySelectorAll('.product-card, .product, [class*="product"], [class*="card"]').forEach(p => p.style.display = 'block');
+        }
+    });
+
+    // 3. تشغيل البحث
+    const input = document.querySelector('input');
+    if (input) {
+        input.addEventListener('input', function() {
+            const val = this.value.toLowerCase().trim();
+            document.querySelectorAll('.product-card, .product, [class*="product"], [class*="card"]').forEach(p => {
+                p.style.display = p.innerText.toLowerCase().includes(val) ? 'block' : 'none';
+            });
+        });
+    }
+
+});
+</script>
+<!-- زر واتساب العائم الرئيسي -->
+<div class="whatsapp-container">
+    <button class="whatsapp-main-btn" onclick="toggleWhatsappMenu()" aria-label="تواصل معنا عبر واتساب">
+        <svg xmlns="http://w3.org" viewBox="0 0 448 512" width="28" height="28" fill="white">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+        <span>تواصل معنا</span>
+    </button>
+
+    <!-- قائمة اختيار الأرقام المنبثقة -->
+    <div id="whatsappMenu" class="whatsapp-menu">
+        <div class="whatsapp-menu-header">إختر الرقم للتواصل</div>
+        
+        <!-- الرقم الأول -->
+        <a href="https://wa.meً،%20أريد%20الاستفسار%20عن%20خدماتكم" target="_blank" rel="noopener noreferrer" class="whatsapp-link-item">
+            <span class="wa-icon-small">💬</span>
+            <div class="wa-text-wrapper">
+                <span class="wa-title">المبيعات / الدعم الفني</span>
+                <span class="wa-number">+20 101 039 7972</span>
+            </div>
+        </a>
+
+        <!-- الرقم الثاني -->
+        <a href="https://wa.meً،%20أريد%20الاستفسار%20عن%20خدماتكم" target="_blank" rel="noopener noreferrer" class="whatsapp-link-item">
+            <span class="wa-icon-small">💬</span>
+            <div class="wa-text-wrapper">
+                <span class="wa-title">الإدارة / الحسابات</span>
+                <span class="wa-number">+20 102 018 9861</span>
+            </div>
+        </a>
+    </div>
+</div>
+
+<style>
+/* التنسيق الأساسي للحاوية الزر */
+.whatsapp-container {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 99999;
+    font-family: Arial, sans-serif;
+    direction: rtl;
+}
+
+/* تصميم الزر العائم الرئيسي */
+.whatsapp-main-btn {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.whatsapp-main-btn:hover {
+    transform: scale(1.05);
+    background-color: #20ba56;
+}
+
+/* تصميم القائمة المنبثقة للأرقام */
+.whatsapp-menu {
+    display: none;
+    position: absolute;
+    bottom: 65px;
+    right: 0;
+    width: 260px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.2);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.whatsapp-menu-header {
+    background: #25d366;
+    color: white;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* تصميم روابط الأرقام داخل القائمة */
+.whatsapp-link-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s ease;
+}
+
+.whatsapp-link-item:last-child {
+    border-bottom: none;
+}
+
+.whatsapp-link-item:hover {
+    background: #f9f9f9;
+}
+
+.wa-icon-small {
+    font-size: 20px;
+}
+
+.wa-text-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.wa-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #222;
+}
+
+.wa-number {
+    font-size: 12px;
+    color: #777;
+    margin-top: 2px;
+}
+
+/* تحسين المظهر على الموبايل */
+@media (max-width: 768px) {
+    .whatsapp-main-btn span {
+        display: none;
+    }
+    .whatsapp-main-btn {
+        padding: 14px;
+        border-radius: 50%;
+    }
+    .whatsapp-menu {
+        right: -10px;
+        bottom: 70px;
+    }
+}
+</style>
+
+<script>
+// دالة لإظهار وإخفاء القائمة عند الضغط على الزر الرئيسي
+function toggleWhatsappMenu() {
+    var menu = document.getElementById("whatsappMenu");
+    if (menu.style.display === "block") {
+        menu.style.display = "none";
+    } else {
+        menu.style.display = "block";
+    }
+}
+
+// إغلاق القائمة تلقائياً إذا ضغط المستخدم في أي مكان خارجها
+window.onclick = function(event) {
+    if (!event.target.closest('.whatsapp-container')) {
+        var menu = document.getElementById("whatsappMenu");
+        if (menu) { menu.style.display = "none"; }
+    }
+}
+</script>
+<script>
+  // استبدل 'myForm' بـ id الـ form عندك لو مختلف
+  const form = document.querySelector('form');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: json
+    })
+    .then(async (response) => {
+      if (response.status == 200) {
+        alert('تم إرسال الطلب بنجاح!');
+        form.reset();
+      } else {
+        alert('حدث خطأ أثناء الإرسال');
+      }
+    })
+    .catch(error => {
+      alert('تعذر الإرسال، تأكد من اتصال الإنترنت');
+    });
+  });
+</script>
+</body>
+</html>

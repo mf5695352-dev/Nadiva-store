@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - NADIVA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8f9fa; color: #333; }
+        
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 8%; background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 22px; font-weight: 700; color: #333; text-decoration: none; }
+        .back-btn { text-decoration: none; color: #e65100; font-weight: 600; font-size: 14px; }
+        
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .product-details-card { background: #ffffff; border-radius: 16px; padding: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+        @media (max-width: 768px) { .product-details-card { grid-template-columns: 1fr; } }
+        
+        .main-image { width: 100%; height: 450px; object-fit: cover; border-radius: 12px; }
+        .category-badge { font-size: 13px; color: #888; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .product-title { font-size: 28px; color: #111; margin-bottom: 12px; }
+        
+        .price-row { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .current-price { font-size: 24px; font-weight: 700; color: #e65100; }
+        .old-price { font-size: 18px; color: #999; text-decoration: line-through; }
+        
+        .description { font-size: 15px; color: #666; line-height: 1.6; margin-bottom: 25px; }
+        .option-group { margin-bottom: 20px; }
+        .option-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+        
+        .size-options { display: flex; gap: 10px; }
+        .size-btn { border: 1px solid #ddd; background: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .size-btn.active { border-color: #e65100; color: #e65100; }
+        
+        .action-row { display: flex; gap: 15px; margin-top: 10px; }
+        .quantity-controls { display: flex; align-items: center; gap: 12px; background: #f5f5f5; padding: 8px 16px; border-radius: 25px; }
+        .quantity-btn { background: none; border: none; font-size: 18px; font-weight: bold; cursor: pointer; }
+        
+        .add-to-cart-btn { flex: 1; background: #e65100; color: #fff; border: none; padding: 14px; border-radius: 25px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .add-to-cart-btn:hover { background: #d84315; }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">nadiva</a>
+        <a href="index.html" class="back-btn">← Back to Shop</a>
+    </header>
+
+    <div class="container">
+        <div class="product-details-card">
+            <div class="product-gallery">
+                <img id="main-img" class="main-image" src="" alt="Product">
+            </div>
+
+            <div class="product-info-section">
+                <span class="category-badge" id="cat-badge">Dresses</span>
+                <h1 class="product-title" id="prod-title">Product Title</h1>
+                
+                <div class="price-row">
+                    <span class="current-price" id="curr-price">$0.00</span>
+                    <span class="old-price" id="old-price">$0.00</span>
+                </div>
+
+                <p class="description" id="prod-desc">Product Description</p>
+
+                <div class="option-group">
+                    <div class="option-title">Select Size:</div>
+                    <div class="size-options">
+                        <button class="size-btn active" onclick="selectSize(this)">S</button>
+                        <button class="size-btn" onclick="selectSize(this)">M</button>
+                        <button class="size-btn" onclick="selectSize(this)">L</button>
+                        <button class="size-btn" onclick="selectSize(this)">XL</button>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="changeQty(-1)">-</button>
+                        <span id="qty-val">1</span>
+                        <button class="quantity-btn" onclick="changeQty(1)">+</button>
+                    </div>
+
+                    <button class="add-to-cart-btn" onclick="addToCartFromDetails()">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const products = [
+                {
+                    id: "1",
+                    title: "Summer Casual Yellow Dress",
+                    category: "Dresses",
+                    price: 45.00,
+                    oldPrice: 60.00,
+                    description: "Stay stylish and comfortable with this vibrant yellow summer dress. Made from high-quality, breathable fabric designed to keep you feeling cool all day.",
+                    mainImage: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500"
+                },
+                {
+                    id: "2",
+                    title: "Urban Chic Crop Top & Pants",
+                    category: "Streetwear",
+                    price: 60.00,
+                    oldPrice: 75.00,
+                    description: "A trendy two-piece streetwear set featuring a lightweight crop top and matching relaxed-fit pants. Perfect for everyday casual wear.",
+                    mainImage: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500"
+                },
+                {
+                    id: "3",
+                    title: "Lightweight Knit Sweater",
+                    category: "Winter Wear",
+                    price: 35.00,
+                    oldPrice: 50.00,
+                    description: "A cozy and soft lightweight sweater perfect for layering during chilly evenings. Crafted with breathable knit fabric for maximum comfort.",
+                    mainImage: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500"
+                },
+                {
+                    id: "4",
+                    title: "Classic Denim Jacket",
+                    category: "Outerwear",
+                    price: 80.00,
+                    oldPrice: 100.00,
+                    description: "A timeless denim jacket featuring durable stitching, classic button closures, and front pockets. An essential piece for any wardrobe.",
+                    mainImage: "https://images.unsplash.com/photo-1544441893-675973e31985?w=500"
+                }
+            ];
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id') || "1";
+            const currentProduct = products.find(p => p.id === productId) || products[0];
+
+            document.getElementById('cat-badge').innerText = currentProduct.category;
+            document.getElementById('prod-title').innerText = currentProduct.title;
+            document.getElementById('curr-price').innerText = `$${currentProduct.price.toFixed(2)}`;
+            document.getElementById('old-price').innerText = `$${currentProduct.oldPrice.toFixed(2)}`;
+            document.getElementById('prod-desc').innerText = currentProduct.description;
+            document.getElementById('main-img').src = currentProduct.mainImage;
+
+            window.currentProduct = currentProduct;
+        });
+
+        let currentQty = 1;
+        let selectedSize = 'S';
+
+        function selectSize(btn) {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedSize = btn.innerText;
+        }
+
+        function changeQty(amount) {
+            if (currentQty + amount > 0) {
+                currentQty += amount;
+                document.getElementById('qty-val').innerText = currentQty;
+            }
+        }
+
+        function addToCartFromDetails() {
+            if (!window.currentProduct) return;
+
+            let cart = JSON.parse(localStorage.getItem('nadiva_cart')) || [];
+            const itemToAdd = {
+                title: `${window.currentProduct.title} (${selectedSize})`,
+                price: window.currentProduct.price,
+                image: window.currentProduct.mainImage,
+                quantity: currentQty
+            };
+
+            const existingIndex = cart.findIndex(item => item.title === itemToAdd.title);
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += currentQty;
+            } else {
+                cart.push(itemToAdd);
+            }
+
+            localStorage.setItem('nadiva_cart', JSON.stringify(cart));
+            window.location.href = "cart.html";
+        }
+    </script>
+</body>
+</html>
