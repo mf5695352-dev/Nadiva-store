@@ -1001,5 +1001,57 @@ function sendToWhatsApp(phoneNum) {
 }
 </script>
 <!-- ================= نهاية فورمة طلبات الواتساب ================= -->
+ <!-- ================= بداية كود ربط السلة بالواتساب تلقائياً ================= -->
+<script>
+// 1. مصفوفة لتخزين عناصر السلة
+if (!window.myCart) {
+  window.myCart = [];
+}
+
+// 2. الاستماع لجميع أزرار Add to Cart في الصفحة تلقائياً
+document.addEventListener('click', function(e) {
+  // البحث عن أزرار إضافة للسلة
+  var target = e.target;
+  if (target && (target.innerText.includes('Add to Cart') || target.classList.contains('add-to-cart'))) {
+    var productCard = target.closest('div') || target.parentElement;
+    if (productCard) {
+      var titleEl = productCard.querySelector('h1, h2, h3, h4, .title, a');
+      var priceEl = productCard.querySelector('.price, p, span');
+      
+      var title = titleEl ? titleEl.innerText.trim() : "منتج";
+      var price = priceEl ? priceEl.innerText.trim() : "";
+
+      window.myCart.push({ title: title, price: price });
+      alert('تمت إضافة ' + title + ' إلى السلة!');
+    }
+  }
+
+  // 3. عند الضغط على زرار Checkout أو إتمام الشراء أو أيقونة السلة
+  if (target && (target.innerText.includes('Checkout') || target.innerText.includes('إتمام') || target.id === 'checkout-btn')) {
+    e.preventDefault();
+    sendCartToWhatsApp('201010397972'); // الرقم الأول الافتراضي
+  }
+});
+
+// 4. دالة تجميع السلة وإرسالها للواتساب
+function sendCartToWhatsApp(phoneNum) {
+  if (window.myCart.length === 0) {
+    alert('السلة فارغة! قم بإضافة منتجات أولاً.');
+    return;
+  }
+
+  var message = "🛒 *طلب جديد من سلة الشراء*%0A%0A*المنتجات المحددة:*%0A";
+  
+  for (var i = 0; i < window.myCart.length; i++) {
+    message += (i + 1) + ". " + encodeURIComponent(window.myCart[i].title) + " (" + encodeURIComponent(window.myCart[i].price) + ")%0A";
+  }
+
+  message += "%0A*يرجى تأكيد الطلب وتحديد عنوان التوصيل.*";
+
+  var whatsappURL = "https://api.whatsapp.com/send?phone=" + phoneNum + "&text=" + message;
+  window.location.href = whatsappURL;
+}
+</script>
+<!-- ================= نهاية كود ربط السلة بالواتساب ================= -->
 </body>
 </html>
