@@ -400,3 +400,118 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+// ================= إرسال البيانات + السلة بعد التعبئة =================
+(function waCheckoutSystem() {
+    function initWA() {
+        // البحث عن جميع الأزرار والخانات في الصفحة
+        var allInputs = document.querySelectorAll('input, textarea');
+        var buttons = document.querySelectorAll('button, a, input[type="submit"], input[type="button"], .btn');
+
+        buttons.forEach(function(btn) {
+            var text = (btn.innerText || btn.value || '').toLowerCase().trim();
+            
+            // استهداف زرار الإرسال النهائي
+            if ((text.includes('إتمام') || text.includes('طلب') || text.includes('شراء') || text.includes('إرسال') || text.includes('confirm') || text.includes('checkout')) && !btn.dataset.waReady) {
+                btn.dataset.waReady = "true";
+
+                btn.addEventListener('click', function(e) {
+                    // قراءة بيانات العميل لحظة الضغط على الزرار
+                    var name = "", phone = "", address = "";
+
+                    allInputs.forEach(function(inp) {
+                        var val = inp.value ? inp.value.trim() : "";
+                        var ph = (inp.placeholder || "").toLowerCase();
+                        var n = (inp.name || "").toLowerCase();
+                        var id = (inp.id || "").toLowerCase();
+                        var type = (inp.type || "").toLowerCase();
+
+                        if (val) {
+                            if (ph.includes("اسم") || n.includes("name") || id.includes("name")) {
+                                name = val;
+                            } else if (type === "tel" || ph.includes("رقم") || ph.includes("هاتف") || ph.includes("تليفون") || n.includes("phone") || id.includes("phone")) {
+                                phone = val;
+                            } else if (ph.includes("عنوان") || n.includes("address") || id.includes("address") || inp.tagName === "TEXTAREA") {
+                                address = val;
+                            }
+                        }
+                    });
+
+                    // لو الخانات فضيت، جرب يجيب أول ٣ خانات بالترتيب
+                    if (!name && allInputs[0] && allInputs[0].value) name = allInputs[0].value.trim();
+                    if (!phone && allInputs[1] && allInputs[1].value) phone = allInputs[1].value.trim();
+                    if (!address && allInputs[2] && allInputs[2].value) address = allInputs[2].value.trim();
+
+                    // لو العميل لسه مكتبش البيانات، سيبه يكملهم في الموقع
+                    if (!name && !phone) {
+                        return; // يترك الفورم يشتغل عادي أو يطلب التعبئة
+                    }
+
+                    // لو كتب البيانات، نوقف الانتقال العادي ونحوله للواتساب
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+
+                    // قراءة سلة المنتجات
+                    var cart = [];
+                    for (var i = 0; i < localStorage.length; i++) {
+                        var k = localStorage.key(i);
+                        try {
+                            var d = JSON.parse(localStorage.getItem(k));
+                            if (Array.isArray(d) && d.length > 0) { cart = d; break; }
+                        } catch(err) {}
+                    }
+
+                    // صياغة الرسالة الشاملة
+                    var msg = "🛒 *طلب جديد من المتجر*%0A";
+                    msg += "---------------------------%0A";
+                    msg += "👤 *الاسم:* " + (name || "غير محدد") + "%0A";
+                    msg += "📞 *الرقم:* " + (phone || "غير محدد") + "%0A";
+                    msg += "📍 *العنوان:* " + (address || "غير محدد") + "%0A";
+                    msg += "---------------------------%0A";
+
+                    if (cart.length > 0) {
+                        msg += "*📦 المنتجات المطلوبة:*%0A";
+                        cart.forEach(function(item, idx) {
+                            var title = item.name || item.title || item.productName || "منتج";
+                            var qty = item.quantity || item.qty || item.count || 1;
+                            msg += (idx + 1) + ". " + title + " (العدد: " + qty + ")%0A";
+                        });
+                    } else {
+                        msg += "*المنتجات:* تفاصيل السلة المضافة.%0A";
+                    }
+
+                    // ظهور نافذة اختيار الرقمين
+                    var oldModal = document.getElementById('wa-phone-modal');
+                    if (oldModal) oldModal.remove();
+
+                    var modalHtml = `
+                        <div id="wa-phone-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:999999; font-family:sans-serif;">
+                            <div style="background:#fff; padding:20px 25px; border-radius:12px; text-align:center; max-width:320px; width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.3);">
+                                <h3 style="margin-top:0; color:#333; font-size:17px;">اختر رقم الواتساب لإرسال الطلب:</h3>
+                                <button id="wa-b1" style="width:100%; margin:8px 0; padding:12px; background:#25D366; color:white; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">01010397972 💬</button>
+                                <button id="wa-b2" style="width:100%; margin:8px 0; padding:12px; background:#128C7E; color:white; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">01020189861 💬</button>
+                                <button id="wa-close" style="background:none; border:none; color:#777; margin-top:8px; cursor:pointer; font-size:13px; text-decoration:underline;">تعديل البيانات</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                    document.getElementById('wa-b1').onclick = function() {
+                        window.location.href = "https://api.whatsapp.com/send?phone=201010397972&text=" + encodeURIComponent(msg);
+                    };
+                    document.getElementById('wa-b2').onclick = function() {
+                        window.location.href = "https://api.whatsapp.com/send?phone=201020189861&text=" + encodeURIComponent(msg);
+                    };
+                    document.getElementById('wa-close').onclick = function() {
+                        document.getElementById('wa-phone-modal').remove();
+                    };
+
+                    return false;
+                }, true);
+            }
+        });
+    }
+
+    initWA();
+    setInterval(initWA, 1000);
+})();
