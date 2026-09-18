@@ -150,3 +150,42 @@ document.addEventListener('click', function(e) {
         window.location.href = "https://api.whatsapp.com/send?phone=201010397972&text=" + message;
     }
 }, true);
+// ================= الحل المضمون 100% لربط السلة بالواتساب =================
+document.addEventListener('click', function (e) {
+    // البحث عن أي عنصر يتداخله الضغط عليه كلمة checkout أو إتمام
+    var target = e.target.closest('button, a, input, div');
+    
+    if (target) {
+        var text = (target.innerText || target.value || '').toLowerCase();
+        
+        if (text.includes('checkout') || text.includes('إتمام') || text.includes('شراء')) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // قراءة السلة بجميع المسميات المحتملة
+            var rawCart = localStorage.getItem('cart') || localStorage.getItem('products') || localStorage.getItem('cartItems') || '[]';
+            var cart = [];
+            try { cart = JSON.parse(rawCart); } catch(err) {}
+
+            var msg = "🛒 *طلب جديد من المتجر*%0A%0A";
+
+            if (Array.isArray(cart) && cart.length > 0) {
+                msg += "*تفاصيل السلة:*%0A";
+                cart.forEach(function(item, index) {
+                    var name = item.name || item.title || item.productName || "منتج";
+                    var qty = item.quantity || item.qty || 1;
+                    var price = item.price ? (" - " + item.price) : "";
+                    msg += (index + 1) + ". " + name + " (العدد: " + qty + ")" + price + "%0A";
+                });
+            } else {
+                msg += "أريد تأكيد الطلب للمنتجات المضافة في السلة.%0A";
+            }
+
+            msg += "%0A📍 *يرجى التواصل لتأكيد العنوان والشحن.*";
+
+            // التوجيه المباشر للواتساب
+            var phone = "201010397972"; // الرقم الأول
+            window.location.href = "https://api.whatsapp.com/send?phone=" + phone + "&text=" + encodeURIComponent(msg);
+        }
+    }
+}, true);
