@@ -118,3 +118,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+// ================= خطوة واحدة لربط السلة بالواتساب =================
+document.addEventListener('click', function(e) {
+    // مراقبة الضغط على أي زرار إتمام طلب أو Checkout في السلة
+    var btn = e.target.closest('button, a, .checkout, #checkout');
+    if (btn && (btn.innerText.toLowerCase().includes('check') || btn.innerText.includes('إتمام') || btn.innerText.includes('طلب'))) {
+        e.preventDefault();
+        
+        // جلب المنتجات من السلة الذكية
+        var cartData = localStorage.getItem('cart') || localStorage.getItem('products') || localStorage.getItem('cartItems');
+        var cart = [];
+        try { cart = JSON.parse(cartData); } catch(err) {}
+
+        var message = "🛒 *طلب جديد من سلة المتجر*%0A%0A";
+        
+        if (cart && cart.length > 0) {
+            message += "*المنتجات المطلوب شراءها:*%0A";
+            cart.forEach(function(item, i) {
+                var name = item.name || item.title || item.productName || "منتج";
+                var price = item.price ? (" - " + item.price) : "";
+                var qty = item.quantity || item.qty ? (" (العدد: " + (item.quantity || item.qty) + ")") : "";
+                message += (i + 1) + ". " + encodeURIComponent(name + qty + price) + "%0A";
+            });
+        } else {
+            message += "*ملاحظة:* يرجى تأكيد المنتجات الموجودة في السلة.%0A";
+        }
+
+        message += "%0A📍 *يرجى التواصل لتأكيد العنوان والتوصيل.*";
+
+        // التوجيه المباشر للواتساب على رقمك
+        window.location.href = "https://api.whatsapp.com/send?phone=201010397972&text=" + message;
+    }
+}, true);
